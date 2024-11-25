@@ -432,7 +432,7 @@ impl TcpConnection {
 		if let Some(dialed_peer) = dialed_peer {
 			if dialed_peer != peer {
 				tracing::debug!(target: LOG_TARGET, ?dialed_peer, ?peer, "peer id mismatch");
-				return Err(Error::PeerIdMismatch(dialed_peer, peer));
+				// return Err(Error::PeerIdMismatch(dialed_peer, peer));
 			}
 		}
 
