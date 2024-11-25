@@ -24,8 +24,10 @@
 use crate::{error::*, peer_id::*};
 
 pub mod ed25519;
+pub mod secp256k1;
 pub(crate) mod noise;
 pub(crate) mod tls;
+
 pub(crate) mod keys_proto {
 	include!(concat!(env!("OUT_DIR"), "/keys_proto.rs"));
 }
@@ -35,6 +37,7 @@ pub(crate) mod keys_proto {
 pub enum PublicKey {
 	/// A public Ed25519 key.
 	Ed25519(ed25519::PublicKey),
+	Secp256k1(secp256k1::PublicKey),
 }
 
 impl PublicKey {
@@ -47,6 +50,7 @@ impl PublicKey {
 		use PublicKey::*;
 		match self {
 			Ed25519(pk) => pk.verify(msg, sig),
+			Secp256k1(pk) => pk.verify(msg, sig),
 		}
 	}
 
@@ -84,6 +88,10 @@ impl From<&PublicKey> for keys_proto::PublicKey {
 		match key {
 			PublicKey::Ed25519(key) => keys_proto::PublicKey {
 				r#type: keys_proto::KeyType::Ed25519 as i32,
+				data: key.encode().to_vec(),
+			},
+			PublicKey::Secp256k1(key) => keys_proto::PublicKey {
+				r#type: keys_proto::KeyType::Secp256k1 as i32,
 				data: key.encode().to_vec(),
 			},
 		}
