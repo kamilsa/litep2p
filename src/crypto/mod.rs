@@ -108,6 +108,8 @@ impl TryFrom<keys_proto::PublicKey> for PublicKey {
 		match key_type {
 			keys_proto::KeyType::Ed25519 =>
 				Ok(ed25519::PublicKey::decode(&pubkey.data).map(PublicKey::Ed25519)?),
+			keys_proto::KeyType::Secp256k1 =>
+				Ok(secp256k1::PublicKey::decode(&pubkey.data).map(PublicKey::Secp256k1)?),
 			_ => unimplemented!("unsupported key type"),
 		}
 	}
